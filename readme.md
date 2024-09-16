@@ -6,15 +6,15 @@
 
 Morse Invader is a Python Game designed to help the player learn to hear and recognize morse code symbols by playing a game,
 where all the symbols are layed out in a binary seach tree to promote easier visualization and recall without rote memorization. 
-In this game the sysmbols are played in random ordrer and the player learns to recognize and reproduce them while the game
+In this game the symbols are played in random ordrer and the player learns to recognize and reproduce them while the game
 keeps track of hits and misses. The binary search tree is five layers deep and currently includes north american alphabetic and 
 numeric codes plus a few more. The design of this game was loosely inspired by Space Invaders, hence the name.   
 
 ## Features
 
-- Pressing 'R' plays a random morse code symbol that challenge the player to recreate the dots and dashes they just heard. 
+- Pressing 'R' plays a random morse code symbol that challenges the player to recreate the dots and dashes they just heard. 
 - The selected random character is displayed on the right as 'Target Char'
-- Pressing 'Enter' causes tHe game to play back the dot and dash sounds for each (valid) symbol that the has player entered.
+- Pressing 'Enter' causes the game to play back the dot and dash sounds for each (valid) symbol that the has player entered.
 - Non morse code symbols are flagged with Red Text and the errant dot dash symbol is shown
 - The game scores each player entry as hit or miss depending on whether the players symbol matches the random symbol
 - The game displays a record of hits and misses 
