@@ -39,7 +39,7 @@ numeric codes plus a few more. The design of this game was loosely inspired by S
 1. Copy ~/src/assets/images/background.jpg to ~/dist/assets/images/background.jpg
 2. Run the executable:
 	./dist/morse_invader.exe
-3. Note: 'exe' Created on a Win10 system
+3. Note: 'exe' Created on a Win10 (x86) system
 
 
 ## How to Play
