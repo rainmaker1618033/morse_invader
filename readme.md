@@ -35,11 +35,35 @@ numeric codes plus a few more. The design of this game was loosely inspired by S
    pip install -r requirements.txt
    ```
 
-## Using the Executable
-1. Copy ~/src/assets/images/background.jpg to ~/dist/assets/images/background.jpg
-2. Run the executable:
-	./dist/morse_invader.exe
-3. Note: 'exe' Created on a Win10 (x86) system
+## Building the Executable
+
+1. To build the executable, follow these steps:
+   ```
+   pip install pyinstaller
+   ```
+2. Run the following commands to generate the executable:
+   ```
+   cd ~\src
+   pyinstaller --onefile --add-data "assets:assets/images" --icon=icon.ico MORSE_INVADER.py
+   ```
+3. The executable will be generated in the /dist folder.
+
+4. Copy ~/src/assets/images/background.jpg to ~/dist/assets/images/background.jpg
+
+5. Run the executable:
+   ```
+   ./dist/morse_invader.exe
+   ```
+
+## Executable File in /dist
+
+The `/dist` folder contains a pre-built executable file for convenience. This file is generated from the Python script using PyInstaller and is meant for Windows 10 (x86) computers.
+
+### Considerations:
+- The executable may not run on other platforms (e.g., Linux, macOS).
+- Users may prefer to build the executable themselves using the instructions in the "Building the Executable" section.
+
+If you want to create the executable yourself, follow the steps provided in the [Building the Executable](#building-the-executable) section.
 
 
 ## How to Play
