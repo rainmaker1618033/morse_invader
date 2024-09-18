@@ -105,7 +105,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Dot Dash sound effects thanks to Pyadio.
+- Dot Dash sound effects thanks to Pyaudio.
 - Game Engine thanks to the Pygame community.
 - Selected algorithms originated by ChatGPT and integrated by author.
 - Background Art inspired by: https://ia.m.wikipedia.org/wiki/File:Morse-code-tree.svg
