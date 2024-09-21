@@ -358,6 +358,10 @@ class ScoreKeeper:
 
 
 
+# ---------------------------------
+#  SHow Game Instructions
+# ---------------------------------	
+
 # Instruction text
 instructions = [
     "    Welcome to Morse Invader!",
@@ -370,9 +374,6 @@ instructions = [
     "Press 'Enter' to start the game."
 ]	
 
-# ---------------------------------
-#  SHow Game Instructions
-# ---------------------------------	
 def show_instructions():
     showing = True
     while showing:
@@ -432,20 +433,21 @@ text_color = (165, 42, 42)  # RGB for brown
 
 # === Create Morse interpreter
 morse_interpreter = MorseCodeInterpreter()
+
 # === Create Morse Code Player
 player = MorseCodePlayer()
 
 # === Create an instance of the ScoreKeeper
-# score_keeper = ScoreKeeper()
 score_keeper = ScoreKeeper(font, window_width, window_height)
 
 # Variables to track arrow key states
 left_pressed = False
 right_pressed = False
 
-# Generate random char when player presses 'R' or 'r' and play it
+# Flag and string updated when player presses 'R' or 'r'  
 Play_Rand_Char = False
 morse_char_tgt = ""
+
 
 # ---------------------------------
 # Main loop
@@ -587,7 +589,8 @@ while True:
     marker.draw(window)
 
     # Redraw the display
-    pygame.display.update()
+    #pygame.display.update()
+    pygame.display.flip()
 
     # Limit frames per second
     pygame.time.Clock().tick(30)
