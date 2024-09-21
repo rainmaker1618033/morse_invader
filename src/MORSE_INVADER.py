@@ -359,7 +359,7 @@ class ScoreKeeper:
 
 
 # ---------------------------------
-#  SHow Game Instructions
+#  Show Game Instructions
 # ---------------------------------	
 
 # Instruction text
@@ -396,7 +396,7 @@ def show_instructions():
 
 # ---------------------------------
 #  Generate random alpha-numeric characters
-#  1) Need to re-write this to use characters contained in class character maps
+#  1) Need to re-write this to use all characters contained in class character maps
 #  2) 
 # ---------------------------------	
 def generate_random_character():
@@ -455,7 +455,7 @@ morse_char_tgt = ""
 move_flag = False
 
 while True:
-    #Handle left/right keyboard events to accumulate morse code symbols
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -463,8 +463,7 @@ while True:
         else:  # else process event.key
             if event.type == pygame.KEYDOWN:
                 # ---------------
-                # If the key press is an arrow key set the move_flag
-                # Accumlate the code symbol and move the marker right or left as needed
+                # Handle left/right keyboard events to move marker and accumulate morse code symbols
                 # ---------------
                 if event.key == pygame.K_LEFT:  # DOT SYMBOL EVENT -- marker moves left 
                     left_pressed = True
@@ -504,7 +503,7 @@ while True:
                     #print('Reset Marker Pos')
 
                 # ---------------
-                # If the key press is R
+                # If the key press is 'R'
                 #   Enable -- Select a Random Alphabetic Character
                 # ---------------
                 #if event.key == pygame.K_r or event.key == pygame.K_R:
@@ -512,16 +511,8 @@ while True:
                     Play_Rand_Char = True
                     #print('R key down')
 
-                # ---------------
-                # Expore using  SPACE instead of R to geneerate new symbol
-                # Note need to clean up keypress in following section
-                # ---------------
-                #if event.key == pygame.K_SPACE:
-                #    Play_Rand_Char = True
-                #    #print('R key down')
-
             # ----------------            
-            # Clear key_press events on KEYUP
+            # else clear selected flag if its KEYUP
             # ----------------
             elif event.type == pygame.KEYUP:
                 
