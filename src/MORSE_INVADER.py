@@ -193,6 +193,13 @@ class MorseCodeInterpreter:
             str: The character corresponding to the Morse code, or an empty string if not found.
         """
         return self.morse_alphabet.get(code, "")
+    
+    def clear_morse_code(self):
+        """
+        Clear the current Morse Code String
+        """
+        self.morse_code = ""
+        
 
 ### END OF CLASS -  MorseCodeInterpreter ###
 
@@ -554,6 +561,8 @@ while True:
 
     # ------------------
     # Play a random character if player typed 'R' or 'r'
+    # Clear the current morse code string
+    # Reset the market to Start
     # ------------------
     if Play_Rand_Char == True:
         morse_char_tgt = generate_random_character()
@@ -561,17 +570,16 @@ while True:
         player.play_morse_code(morse_char_tgt)
         #time.sleep(3)
         Play_Rand_Char = False
-        ## Added -- side effect  unknown morse code string is not always cleared
-        # marker.reset_marker() # Reset marker to starting position
+        morse_interpreter.morse_code = ""
+        marker.reset_marker() # Reset marker to starting position
 
 
-    # Display the score
+    # ------------------
+    # Update Score and Marker Position
+    # ------------------
+   
     score_keeper.display_score(window)
-
-    # ------------------
-    # Update Marker Position
-    # ------------------
-    # Move Marker
+   
     if move_flag == True:
         marker.move(left_pressed, right_pressed, window_width, window_height)
         move_flag = False   
@@ -580,5 +588,6 @@ while True:
 
     # Redraw the display
     pygame.display.update()
+
     # Limit frames per second
     pygame.time.Clock().tick(30)
