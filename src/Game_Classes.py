@@ -119,6 +119,7 @@ class MorseCodeInterpreter:
         self.morse_code = ""
         self.letter_message = ""
         self.answer = None
+        self.answer_color = (165, 42, 42)  # BROWN
         self.morse_code_mappings = {
             pygame.K_LEFT: ".",
             pygame.K_RIGHT: "-"
@@ -158,9 +159,13 @@ class MorseCodeInterpreter:
         if self.morse_code in self.morse_alphabet:
             self.letter_message = f'Code Letter: {self.morse_alphabet[self.morse_code]}'
             self.answer = True
+            self.answer_color = (165, 42, 42)  # BROWN
         else:
             self.letter_message = f'Unknown Morse Code: {self.morse_code}'
             self.answer = False
+            self.answer_color = (255, 0, 0)  # RED
+
+        # clear the accumlated dot dash string
         self.morse_code = ""
 
     def check_valid_morse_code(self):
