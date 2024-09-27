@@ -84,7 +84,7 @@ morse_interpreter = MorseCodeInterpreter()
 # === Create Morse Code Player
 player = MorseCodePlayer()
 
-# === Create an instance of the ScoreKeeper
+# === Create ScoreKeeper
 score_keeper = ScoreKeeper(font, window_width, window_height)
 
 # Variables to track arrow key states
@@ -92,7 +92,7 @@ left_pressed = False
 right_pressed = False
 
 # Flag and string updated when player presses 'R' or 'r'  
-Play_Rand_Char = False
+# Play_Rand_Char = False
 morse_char_tgt = ""
 
 
@@ -122,14 +122,14 @@ while True:
                     move_flag = True
                     #print('right_arrow')
 					
-                if move_flag == True: #Handle left/right keyboard events to accumulate morse code symbols
+                if move_flag == True: # Accumulate morse code symbols
                     morse_interpreter.handle_event(event)  
 
                 # ---------------
-                # If the key press is RETURN key 
+                # If the key press is RETURN [EMTER] key 
                 #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
                 #   Depending if the code symbol matches the target -- adjust the hit/miss score
-                #   Set the Answer String text depending on match and clear the current morse code string
+                #   Set the Answer String text depending on match case and clear the current morse code string
                 #   Reset the marker to the starting point.
                 # ---------------
                 if event.key == pygame.K_RETURN: #Choose this key to verify the morse code entered by the player
@@ -150,13 +150,19 @@ while True:
                     #print('Reset Marker Pos')
 
                 # ---------------
-                # If the key press is 'R'
-                #   Enable -- Select a Random Alphabetic Character
+                # Play a random character if player typed 'R' or 'r'    
+                # i.e. event.key == pygame.K_r or event.key == pygame.K_R:
+                # Clear the current morse code string
+                # Reset the market to Start
                 # ---------------
-                #if event.key == pygame.K_r or event.key == pygame.K_R:
                 if event.key == pygame.K_r:
-                    Play_Rand_Char = True
-                    #print('R key down')
+                    morse_char_tgt = generate_random_character()
+                    #print('MORSE CHAR TGT :',morse_char_tgt)
+                    player.play_morse_code(morse_char_tgt)
+                    #time.sleep(3)
+                    # Play_Rand_Char = False
+                    morse_interpreter.morse_code = ""
+                    marker.reset_marker() # Reset marker to starting position
 
             # ----------------            
             # else clear selected flag if its KEYUP
@@ -177,41 +183,22 @@ while True:
     # Clear the screen
     window.blit(background_image, (0, 0))
  
-     # ------------------
-    #  Dispay Morse Code STRING and Interp ALPHA Char message
+    # ------------------
+    #  Retrieve and display whatever accumulated Morse Code the Player has entered, if any
     # ------------------
     Morse_Message = 'Morse Code Symbol: {}'.format(morse_interpreter.morse_code)
     MSSG1 = font.render(Morse_Message, True, text_color)
     window.blit(MSSG1, (20, 20))
     
-    if morse_interpreter.answer == True : 
-        #answer_color = (0, 255, 0)  # GREEN
-        answer_color = (165, 42, 42)  # BROWN
-    else:
-        answer_color = (255, 0, 0)  # RED
-
-
-    mssg = font.render(morse_interpreter.letter_message, True, answer_color)
+    mssg = font.render(morse_interpreter.letter_message, True, morse_interpreter.answer_color)
     window.blit(mssg, (window_width - mssg.get_width() - 20, 20))
 
     # Addition to display morse_char_tgt -- need to fix color
     TGT_CHAR_MSSG = 'Target Char: {}'.format(morse_char_tgt)
-    tgt_char = font.render(TGT_CHAR_MSSG, True, answer_color)
+    tgt_char = font.render(TGT_CHAR_MSSG, True, morse_interpreter.answer_color)
     window.blit(tgt_char, (window_width - tgt_char.get_width() - 20, 40))
 
-    # ------------------
-    # Play a random character if player typed 'R' or 'r'
-    # Clear the current morse code string
-    # Reset the market to Start
-    # ------------------
-    if Play_Rand_Char == True:
-        morse_char_tgt = generate_random_character()
-        #print('MORSE CHAR TGT :',morse_char_tgt)
-        player.play_morse_code(morse_char_tgt)
-        #time.sleep(3)
-        Play_Rand_Char = False
-        morse_interpreter.morse_code = ""
-        marker.reset_marker() # Reset marker to starting position
+    ## where the code for R key was...
 
 
     # ------------------
