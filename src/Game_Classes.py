@@ -165,6 +165,9 @@ class MorseCodeInterpreter:
             self.answer = False
             self.answer_color = (255, 0, 0)  # RED
 
+        # Print to debug
+        # print(f'Clearing morse_code: {self.morse_code}')
+        
         # clear the accumlated dot dash string
         self.morse_code = ""
 
@@ -174,6 +177,9 @@ class MorseCodeInterpreter:
         Returns:
             bool: True if the current Morse code is valid, False otherwise.
         """
+        # Print to debug
+        # print(f'Checking morse_code: {self.morse_code}')
+
         self.answer = self.morse_code in self.morse_alphabet
         return self.answer
 
