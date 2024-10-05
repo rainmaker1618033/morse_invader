@@ -1,8 +1,5 @@
 import pygame
 import numpy as np
-import pyaudio
-import time
-
 
 class Marker:
     """
@@ -56,7 +53,8 @@ class Marker:
         Args:
             surface (pygame.Surface): The surface to draw the marker on.
         """
-        pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
+        # pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
+        pygame.draw.circle(surface, self.color, (self.x + self.size // 2, self.y + self.size // 2), self.size // 2)
 
     def move(self, left_pressed, right_pressed, window_width, window_height):
         """
