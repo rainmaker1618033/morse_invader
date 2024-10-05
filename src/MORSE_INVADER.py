@@ -5,8 +5,8 @@ import pyaudio
 import time
 import random
 import string
-from Game_Classes import MorseCodePlayer, MorseCodeInterpreter,Marker,ScoreKeeper
-
+from MorseCode_Classes import MorseCodePlayer, MorseCodeInterpreter 
+from Game_Classes import Marker,ScoreKeeper
 # ---------------------------------
 #  Show Game Instructions
 # ---------------------------------	
