@@ -74,7 +74,9 @@ background_image = pygame.image.load("assets/images/background.jpg").convert()
 
 # === Create Marker instance with specified color
 BLK_SIZE = 25
-marker_color = (0, 255, 0)  # Example color (green)  
+#marker_color = (0, 255, 0)  # Example color (green)  
+marker_color = (173, 216, 230) # Light Blue
+
 marker = Marker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color)
 text_color = (165, 42, 42)  # RGB for brown
 
@@ -129,7 +131,7 @@ while True:
                 # ---------------
                 # If the key press is RETURN [EMTER] key 
                 #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
-                #   Depending if the code symbol matches the target -- adjust the hit/miss score
+                #   Adjust the Game score
                 #   Set the Answer String text depending on match case and clear the current morse code string
                 #   Reset the marker to the starting point.
                 # ---------------
@@ -179,10 +181,11 @@ while True:
                     #print('R key up')
                     pass
 
+    # END OF FOR LOOP SCOPE
     
     # Clear the screen
     window.blit(background_image, (0, 0))
- 
+     
     # ------------------
     #  Display accumulated Morse Code or '___________' if none is entered
     # ------------------
@@ -206,17 +209,15 @@ while True:
 
     # ------------------    
 
-    # Addition to display morse_char_tgt -- need to fix color
+    # Temporary Addition to display morse_char_tgt  
+    # Replace with circle marker
     TGT_CHAR_MSSG = 'Target Char: {}'.format(morse_char_tgt)
     tgt_char = font.render(TGT_CHAR_MSSG, True, morse_interpreter.answer_color)
     window.blit(tgt_char, (window_width - tgt_char.get_width() - 20, 40))
 
-    ## where the code for R key was...
-
     # ------------------
     # Update Score and Marker Position
     # ------------------
-   
     score_keeper.display_score(window)
    
     if move_flag == True:
