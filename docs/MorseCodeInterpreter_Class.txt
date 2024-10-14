@@ -1,0 +1,58 @@
+# MorseCodeInterpreter
+
+A class for interpreting Morse code input from user events, typically in a Pygame environment.
+
+## Class Overview
+
+The `MorseCodeInterpreter` class handles the interpretation of Morse code input, usually from arrow key presses in a Pygame environment. It maintains the current Morse code input, interprets it, and provides methods for checking and retrieving the interpreted results.
+
+## Attributes
+
+- `morse_code` (str): The current Morse code input string.
+- `letter_message` (str): The interpreted letter or error message.
+- `answer` (bool): Indicates if the current Morse code is valid.
+- `answer_color` (tuple): RGB color tuple for the answer message.
+- `morse_code_mappings` (dict): Maps Pygame key events to Morse code symbols.
+- `morse_alphabet` (dict): Maps Morse code symbols to corresponding letters, numbers, or symbols.
+
+## Methods
+
+### `__init__(self)`
+Initializes the MorseCodeInterpreter with empty initial values for all attributes.
+
+### `handle_event(self, event)`
+Processes a Pygame event, interpreting arrow key presses as Morse code input.
+
+Parameters:
+- `event` (pygame.event.Event): The Pygame event to process.
+
+### `interpret_morse_code(self)`
+Interprets the current Morse code input, updates the `letter_message` attribute, and resets the `morse_code` string.
+
+### `check_valid_morse_code(self)`
+Checks if the current Morse code input is valid.
+
+Returns:
+- bool: True if the current Morse code is valid, False otherwise.
+
+### `current_morse_code(self)`
+Retrieves the letter corresponding to the current Morse code input.
+
+Returns:
+- str: The letter corresponding to the current Morse code if valid, an empty string otherwise.
+
+### `lookup_morse_code(self, code)`
+Looks up the character corresponding to a given Morse code string.
+
+Parameters:
+- `code` (str): The Morse code string to look up.
+
+Returns:
+- str: The character corresponding to the Morse code, or an empty string if not found.
+
+### `clear_morse_code(self)`
+Clears the current Morse code string.
+
+## Usage
+
+This class is typically used in a Pygame environment where the user inputs Morse code using arrow keys. Left arrow represents a dot (.), right arrow represents a dash (-), and the Return key triggers the interpretation of the input.
