@@ -211,4 +211,102 @@ class MorseCodeInterpreter:
 
 ### END OF CLASS -  MorseCodeInterpreter ###
 
+class MorseCodeEncoder:
+    """
+    A class to encode alpha-numeric characters into Morse code, allowing step-by-step conversion.
 
+    This class provides functionality to convert individual characters into their Morse code
+    equivalents and retrieve the code one element (dot or dash) at a time.
+
+    Attributes:
+        morse_code (dict): A dictionary mapping characters to their Morse code equivalents.
+        current_code (str): The current Morse code sequence being processed.
+        current_index (int): The current position in the Morse code sequence.
+    """
+
+    def __init__(self):
+        """
+        Initialize the MorseCodeEncoder with a Morse code dictionary and reset state.
+
+        Sets up the Morse code dictionary and initializes the current_code to an empty string
+        and current_index to 0.
+        """
+        self.morse_code = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.',
+            'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.',
+            'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-',
+            'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
+            '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
+            '6': '-....', '7': '--...', '8': '---..', '9': '----.', '+': '.-.-.', '=': '-...-', 
+            '/': '-..-.',' ': ' ',  # space
+        }
+        self.current_code = ""
+        self.current_index = 0
+
+    def select_character(self, char):
+        """
+        Select a character and set the current Morse code sequence for encoding.
+
+        Args:
+            char (str): The character to be converted to Morse code.
+
+        Raises:
+            ValueError: If the character is not found in the Morse code dictionary.
+
+        Returns:
+            None
+        """
+        if char in self.morse_code:
+            self.current_code = self.morse_code[char]
+            self.current_index = 0
+        else:
+            raise ValueError(f"Character not found in Morse code dictionary: {char}")
+
+    def next_dot_dash(self):
+        """
+        Return the next dot or dash in the current Morse code sequence.
+
+        Returns:
+            tuple: A tuple containing:
+                - done_flag (bool): True if this is the last element in the sequence, False otherwise.
+                - left_press (bool): True for a dot, False for a dash.
+                - right_press (bool): True for a dash, False for a dot.
+
+        Raises:
+            IndexError: If there are no more dots or dashes to return.
+            ValueError: If an unexpected character is encountered in the Morse code sequence.
+
+        Example:
+            >>> encoder = MorseCodeEncoder()
+            >>> encoder.select_character('A')
+            >>> encoder.next_dot_dash()
+            (False, True, False)  # Returns a dot
+            >>> encoder.next_dot_dash()
+            (True, False, True)   # Returns a dash and signals end of sequence
+        """
+        if self.current_index < len(self.current_code):
+            dot_dash = self.current_code[self.current_index]
+            self.current_index += 1
+            done_flag = self.current_index == len(self.current_code)
+            if dot_dash == '.':
+                return done_flag, True, False
+            elif dot_dash == '-':
+                return done_flag, False, True
+            else:
+                raise ValueError(f"Unexpected character in Morse code: {dot_dash}")
+        else:
+            raise IndexError("No more dots or dashes to return")
+
+    def reset(self):
+        """
+        Reset the current index to 0.
+
+        This method allows restarting the encoding process for the current character
+        without selecting a new character.
+
+        Returns:
+            None
+        """
+        self.current_index = 0
+
+### END OF CLASS -  MorseCodeEncoder ###

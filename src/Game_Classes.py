@@ -54,7 +54,9 @@ class Marker:
             surface (pygame.Surface): The surface to draw the marker on.
         """
         # pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
+        # now draw a cicle instead of a square
         pygame.draw.circle(surface, self.color, (self.x + self.size // 2, self.y + self.size // 2), self.size // 2)
+        #print('MARKER DRAW NOW')
 
     def move(self, left_pressed, right_pressed, window_width, window_height):
         """
@@ -102,6 +104,100 @@ class Marker:
         self.move_count = 0
 
 ### END OF CLASS -  Marker ###
+
+class CircleMarker:
+    """
+    A class to represent a circle marker with text in a Pygame window.
+
+    This class encapsulates the properties and methods for creating and
+    managing a circular marker with centered text, which can be drawn
+    on a Pygame surface.
+
+    Attributes:
+        window_size (tuple): The size of the Pygame window (width, height).
+        circle_center (list): The center coordinates of the circle [x, y].
+        circle_radius (int): The radius of the circle in pixels.
+        circle_color (tuple): The color of the circle in RGB format (r, g, b).
+        font_size (int): The size of the font for the text in pixels.
+        font_color (tuple): The color of the font in RGB format (r, g, b).
+        text (str): The text to be displayed inside the circle.
+        font (pygame.font.Font): The font object for rendering text.
+        text_surface (pygame.Surface): The surface containing the rendered text.
+        text_rect (pygame.Rect): The rectangle enclosing the text surface.
+    """
+
+    def __init__(self, window_size):
+        """
+        Initialize the CircleMarker with default values.
+
+        Args:
+            window_size (tuple): The size of the Pygame window (width, height).
+
+        Note:
+            This method sets up default values for the circle and text attributes.
+            The circle is initially placed at the center of the window with a red color,
+            and the text is set to "_" with white color.
+        """
+        self.window_size = window_size
+        self.circle_center = [window_size[0] // 2, window_size[1] // 2]
+        self.circle_radius = 100
+        self.circle_color = (255, 0, 0)  # Red
+        self.font_size = 50
+        self.font_color = (255, 255, 255)  # White
+        self.text = "_"  # Unknown character guard
+        self.font = pygame.font.Font(None, self.font_size)
+        self.text_surface = self.font.render(self.text, True, self.font_color)
+        self.text_rect = self.text_surface.get_rect(center=self.circle_center)
+
+    def set_circle_attributes(self, x, y, radius):
+        """
+        Set the attributes of the circle.
+
+        Args:
+            x (int): The x-coordinate of the circle center.
+            y (int): The y-coordinate of the circle center.
+            radius (int): The radius of the circle in pixels.
+
+        Note:
+            This method updates the circle's position and size. It does not
+            update the text position, which should be done separately if needed.
+        """
+        self.circle_center = [x, y]
+        self.circle_radius = radius
+
+    def set_font_attributes(self, target_letter, new_size):
+        """
+        Set the attributes of the font and update the text.
+
+        Args:
+            target_letter (str): The text to be displayed inside the circle.
+            new_size (int): The new size of the font in pixels.
+
+        Note:
+            This method updates the text content and font size, and recreates
+            the text surface and rectangle to reflect these changes.
+        """
+        self.text = target_letter
+        self.font_size = new_size
+        self.font = pygame.font.Font(None, int(self.font_size))
+        self.text_surface = self.font.render(self.text, True, self.font_color)
+        self.text_rect = self.text_surface.get_rect(center=self.circle_center)
+
+    def draw(self, window):
+        """
+        Draw the circle and the text on the Pygame window.
+
+        Args:
+            window (pygame.Surface): The Pygame window surface to draw on.
+
+        Note:
+            This method draws the circle first, then blits the text surface
+            onto the window at the position specified by text_rect.
+        """
+        pygame.draw.circle(window, self.circle_color, self.circle_center, self.circle_radius)
+        window.blit(self.text_surface, self.text_rect)
+        
+### END OF CLASS -  CircleMarker ###
 
 
 class ScoreKeeper:
