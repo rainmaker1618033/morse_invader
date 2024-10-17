@@ -54,56 +54,6 @@ class CompositeMarker:
 
 ######## END OF CLASSES ################
 
-
-# ---------------------------------
-#  Return radius and trim_xy position for circle marker based on move_count
-# ---------------------------------	
-## REVISIT  -- moved to CircleMarker Class
-def get_radius_from_list(move_count):
-    radii = [0, 40, 40, 30, 30, 25, 0]
-    xy_trim = [(0, 0), (10, 5), (10, 5), (15, 10), (13, 11), (7, 0)] 
-    xy_mod = xy_trim[move_count]
-    if 0 <= move_count < len(radii):
-        return radii[move_count],xy_mod
-    else:
-        return "Index out of range"
-    
-# --------------------------------------
-#  Update and Draw Game Marker Positions
-# --------------------------------------	
-## REVISIT
-def update_game_state(window, background_image, encoder, marker, game_marker, rand_char):
-
-    # Clear the screen
-    window.blit(background_image, (0, 0))
-
-    # determine the next postion for the game marker
-    done_flag, left_pressed, right_pressed = encoder.next_dot_dash()
-    marker.move(left_pressed, right_pressed, window.get_width(), window.get_height())
-
-    # use marker count status as index for cicle radius lookup
-    new_radius, xy_mod = get_radius_from_list(marker.move_count)
-    new_font_size = new_radius
-    x_mod = xy_mod[0]
-    y_mod = xy_mod[1]
-
-    # Draw the game marker circle with scaled font
-    game_marker.set_circle_attributes((marker.x)+x_mod, (marker.y)+y_mod, new_radius)
-    game_marker.set_font_attributes(rand_char, new_font_size)
-    game_marker.draw(window)
-    print('GAME MARKER')
-
-    # Update the display
-    pygame.display.flip()
-
-    if done_flag:  
-        marker.reset_marker() # Reset marker to starting position
-        # rand_char = generate_random_character()  
-        # encoder.select_character(rand_char)
-
-    print('GAME STATE DRAW MARKER')
-    return done_flag
-
 # ---------------------------------
 #  Show Game Instructions
 # ---------------------------------	
@@ -138,15 +88,6 @@ def show_instructions():
         pygame.display.update()
         pygame.time.Clock().tick(30)
 
-
-# ---------------------------------
-#  Generate random alpha-numeric and '+\='characters
-# ---------------------------------	
-## REVISIT  -- moved to MorseCdeEncoder Class
-def generate_random_character():
-    characters = string.ascii_uppercase + string.digits + '+/='
-    return random.choice(characters)
-        
 ### END OF FUNCTIONS ###
 
 
