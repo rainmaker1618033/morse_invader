@@ -6,11 +6,59 @@ import time
 import random
 import string
 from MorseCode_Classes import MorseCodePlayer, MorseCodeInterpreter,MorseCodeEncoder
-from Game_Classes import Marker, CircleMarker, ScoreKeeper
+from Game_Classes import RectangleMarker, CircleMarker, ScoreKeeper
+
+
+######## COMPOSITE CLASSES ################
+
+class CompositeMarker:
+    def __init__(self, x, y, size, speed_x, speed_y, color, window_size):
+        self.rectangle_marker = RectangleMarker(x, y, size, speed_x, speed_y, color)
+        self.circle_marker = CircleMarker(window_size)
+        self.encoder = MorseCodeEncoder()
+        #print(f"Type of self.rectangle_marker: {type(self.rectangle_marker)}")
+        #print(f"Methods of self.rectangle_marker: {[method for method in dir(self.rectangle_marker) if callable(getattr(self.rectangle_marker, method))]}")
+
+    def draw_marker(self, surface):
+        self.rectangle_marker.draw(surface)
+    
+    def move_mkr(self, left_pressed, right_pressed, window_width, window_height):
+        self.rectangle_marker.move_mkr(left_pressed, right_pressed, window_width, window_height)
+
+    def reset_marker(self):
+        self.rectangle_marker.reset_marker()
+
+    def encode_character(self, char):
+        self.encoder.select_character(char)
+
+    def generate_random_character(self):
+        return self.encoder.generate_random_character()        
+
+    def next_dot_dash(self):
+        return self.encoder.next_dot_dash()
+
+    def reset_encoder(self):
+        self.encoder.reset()
+
+    def draw_circle(self, surface):
+        self.circle_marker.draw(surface)
+    
+    def set_circle_attributes(self, x, y, radius):
+        self.circle_marker.set_circle_attributes(x, y, radius)
+
+    def set_font_attributes(self, TGT_LTR, NEW_SIZE):
+        self.circle_marker.set_font_attributes(TGT_LTR, NEW_SIZE)
+
+    def get_radius_from_list(self, move_count):
+        return self.circle_marker.get_radius_from_list(move_count)
+
+######## END OF CLASSES ################
+
 
 # ---------------------------------
 #  Return radius and trim_xy position for circle marker based on move_count
 # ---------------------------------	
+## REVISIT  -- moved to CircleMarker Class
 def get_radius_from_list(move_count):
     radii = [0, 40, 40, 30, 30, 25, 0]
     xy_trim = [(0, 0), (10, 5), (10, 5), (15, 10), (13, 11), (7, 0)] 
@@ -23,6 +71,7 @@ def get_radius_from_list(move_count):
 # --------------------------------------
 #  Update and Draw Game Marker Positions
 # --------------------------------------	
+## REVISIT
 def update_game_state(window, background_image, encoder, marker, game_marker, rand_char):
 
     # Clear the screen
@@ -93,6 +142,7 @@ def show_instructions():
 # ---------------------------------
 #  Generate random alpha-numeric and '+\='characters
 # ---------------------------------	
+## REVISIT  -- moved to MorseCdeEncoder Class
 def generate_random_character():
     characters = string.ascii_uppercase + string.digits + '+/='
     return random.choice(characters)
@@ -120,61 +170,51 @@ font = pygame.font.Font(None, 36)
 # Show instructions before starting the game
 show_instructions()	
 
+# ---------------------------------
+#  MISC SETUP
+# ---------------------------------
 # Load background image
 background_image = pygame.image.load("assets/images/background.jpg").convert()
-
-# ---------------------------------
-#  INIT GAME CLASSES
-# ---------------------------------
-
-# === Create Marker instance with specified color
-BLK_SIZE = 25
-#marker_color = (0, 255, 0)  # Example color (green)  
-marker_color = (173, 216, 230) # Light Blue
-
-# === Marker for Player Position
-marker_upos = Marker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color)
-
-# === Use for Game Marker Position
-marker_gpos = Marker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color)
-
-# === Create an instance of CircleText
-game_marker = CircleMarker(window_size)
-
-text_color = (165, 42, 42)  # RGB for brown -- used for default message color
-
+## original size of rectangular marker -- needed?
+BLK_SIZE = 25  
+# Light Blue -- Green (0, 255, 0)  
+marker_color = (173, 216, 230) 
+# RGB for brown -- used for default message color
+text_color = (165, 42, 42)  
 # === Variables to track arrow-key states
 left_pressed = False
 right_pressed = False
 
+# ---------------------------------
+#  INIT GAME CLASSES
+# ---------------------------------
+# === Marker for Player Position
+player_marker = RectangleMarker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color)
+PLAYER_MARKER_MOVING = False # player has not hit left/right arrow keys
+# === Game Marker Position
+game_marker = CompositeMarker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color, window_size)
+GAME_MARKER_MOVING = False # Game Target Circle is not displayed 
 # === Create ScoreKeeper
 score_keeper = ScoreKeeper(font, window_width, window_height)
 
 # ---------------------------------
 #  INIT MORSE CODE CLASSES
 # ---------------------------------
-
 # === Create Morse Code Interpreter
 morse_interpreter = MorseCodeInterpreter()
 # Updated when player presses 'R' or 'r'  
 morse_char_tgt = ""
-
 # === Create Morse Code Player
 code_player = MorseCodePlayer()
-
 # ==== Create an instance of MorseCodeEncoder  
 encoder = MorseCodeEncoder()
 
 # ---------------------------------
 # Main loop
 # ---------------------------------
-
-# Set up the interval timer
+# Set up the interval timer for game maker update
 interval = 0.5  # 500ms in seconds
 start_time = time.time()
-
-PLAYER_MARKER_MOVING = False # player has not hit left/right arrow keys
-GAME_MARKER_MOVING = False   # target circle is not displayed
 
 while True:
     elapsed_time = time.time()
@@ -191,65 +231,53 @@ while True:
                 if event.key == pygame.K_LEFT:  # DOT SYMBOL EVENT -- marker moves left 
                     left_pressed = True
                     PLAYER_MARKER_MOVING = True
-                    morse_interpreter.letter_message = ""  # Blank the previous decoded char
+                    morse_interpreter.letter_message = ""  # Blank the previous letter_message
                     #print('left_arrow')
                 
                 if event.key == pygame.K_RIGHT: # DASH SYMBOL EVENT -- marker moves right 
                     right_pressed = True
                     PLAYER_MARKER_MOVING = True
-                    morse_interpreter.letter_message = ""  # Blank the previous decoded char
+                    morse_interpreter.letter_message = ""  # Blank the previous letter_message
                     #print('right_arrow')
 					
-                if PLAYER_MARKER_MOVING == True: 
-                    # event = Left/Right: Accumulate morse code symbols [ONLY]
-                    morse_interpreter.handle_event(event)  
-                    # NOTE 'RETURN' could only get handled here if PLAYER_MARKER_MOVING is True, however,
-                    # PLAYER_MARKER_MOVING is cleared below each time the arrow key moves the cursor
+                if PLAYER_MARKER_MOVING == True:  # if Left/Right event occured: 
+                    morse_interpreter.handle_event(event)  # Accumulate morse code symbols, 
+                    # 'RETURN'/update letter_message text' is handled in its own IF CASE below
 
                 # ---------------
                 # If the key press is RETURN [EMTER] key 
                 #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
                 #   Adjust the Game score
-                #   Set the Answer String text depending on match case and clear the current morse code string
                 #   Reset the marker to the starting point.
                 # ---------------
                 if event.key == pygame.K_RETURN: # Choose this key to verify the morse code entered by the player
 				
                     if morse_interpreter.check_valid_morse_code() == True:  # Play code if valid 
                         code_player.play_morse_code(morse_interpreter.lookup_morse_code(morse_interpreter.morse_code))
-                        #print('Play Morse Code if VALID')
-
                     if morse_char_tgt == morse_interpreter.current_morse_code():
                         score_keeper.increment_player_score()
                     else:
                         score_keeper.increment_game_score()
+                    morse_interpreter.handle_event(event) #handle K_RETURN -> clear the dot-dash string
+                    player_marker.reset_marker() # Reset marker to starting position
 
-                    morse_interpreter.handle_event(event) #handle K_RETURN -> clear the string
-                    #print('Classify MORSE LETTER STRING and clear string')
-
-                    marker_upos.reset_marker() # Reset marker to starting position
-                    #print('Reset Marker Pos')
 
                 # ---------------
-                # Play a random character if player typed 'R' or 'r'    
-                # i.e. event.key == pygame.K_r or event.key == pygame.K_R:
+                # If event.key == pygame.K_r or event.key == pygame.K_R:
+                #   Play a random character  
                 # Clear the current morse code string
                 # Reset the market to Start
                 # ---------------
                 if event.key == pygame.K_r:
                     if GAME_MARKER_MOVING is False:
-                        morse_char_tgt = generate_random_character()
-                        encoder.select_character(morse_char_tgt)
-                        GAME_MARKER_MOVING = True
-                        print('INIT GAME MARKER')
-                        # add
+                        morse_char_tgt = game_marker.encoder.generate_random_character()
+                        print('INIT GAME MRKR - MORSE CHAR TGT :',morse_char_tgt)
+                        game_marker.encode_character(morse_char_tgt)
                         code_player.play_morse_code(morse_char_tgt)
                         morse_interpreter.morse_code = ""
-                        marker_upos.reset_marker() # Reset marker to starting position
-                        # morse_char_tgt = generate_random_character()
-                        print('MORSE CHAR TGT :',morse_char_tgt)
-                        #time.sleep(3)
-                    
+                        player_marker.reset_marker() # Reset marker to starting position                    
+                        GAME_MARKER_MOVING = True
+
             # ----------------            
             # else clear selected flag if its KEYUP
             # ----------------
@@ -298,18 +326,28 @@ while True:
     # ------------------
     # Check if the interval has passed and GAME_MARKER needs updating
     if elapsed_time - start_time >= interval and GAME_MARKER_MOVING:    
-        
-        # update the game marker position
-        move_flag = update_game_state(window, background_image, encoder, marker_gpos, game_marker, morse_char_tgt)
+        # encode current morse_char_tgt char into 'next' left/right = dot/dash
+        move_done_flag, left_pressed, right_pressed = game_marker.next_dot_dash()
+        # next marker position based on left/right; move_count++
+        game_marker.move_mkr(left_pressed, right_pressed, window.get_width(), window.get_height())
 
-        if move_flag:  # if the game marker has reached its destination    
+        move_count = game_marker.rectangle_marker.move_count
+        radius, xy_mod = game_marker.get_radius_from_list(move_count)
+        # add corrected x/y offset to marker postions
+        x_mod = xy_mod[0] + game_marker.rectangle_marker.x
+        y_mod = xy_mod[1] + game_marker.rectangle_marker.y
+
+        game_marker.set_circle_attributes(x_mod, y_mod, radius)
+        game_marker.set_font_attributes(morse_char_tgt, radius)  # radius determins font size
+
+        if move_done_flag:  # if the game marker has reached its destination    
             GAME_MARKER_MOVING = False
+            game_marker.reset_marker() # Reset marker to starting position            
             print('WAIT FOR NEXT KEY PRESS')
         else:
             # reset the timer for next update
-            print('UPDATE INTERVAL : ',start_time, ':', elapsed_time)
             start_time = elapsed_time
-
+            print('*')
 
     # ------------------
     # Update Score and Marker Position
@@ -317,11 +355,14 @@ while True:
     score_keeper.display_score(window)
    
     if PLAYER_MARKER_MOVING == True:
-        marker_upos.move(left_pressed, right_pressed, window_width, window_height)
+        player_marker.move_mkr(left_pressed, right_pressed, window_width, window_height)
         PLAYER_MARKER_MOVING = False   
 
     
-    marker_upos.draw(window)
+    player_marker.draw(window)
+    game_marker.draw_circle(window)
+
+
     #marker_gpos.draw(window)
 
     # Redraw the display
