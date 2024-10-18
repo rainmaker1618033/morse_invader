@@ -158,85 +158,98 @@ encoder = MorseCodeEncoder()
 interval = 0.5  # 500ms in seconds
 start_time = time.time()
 
+max_count_events = 0
+
 while True:
     elapsed_time = time.time()
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        else:  # else process event.key
-            if event.type == pygame.KEYDOWN:
-                # ---------------
-                # Handle left/right keyboard events to move marker and accumulate morse code symbols
-                # ---------------
-                if event.key == pygame.K_LEFT:  # DOT SYMBOL EVENT -- marker moves left 
-                    left_pressed = True
-                    PLAYER_MARKER_MOVING = True
-                    morse_interpreter.letter_message = ""  # Blank the previous letter_message
-                    #print('left_arrow')
-                
-                if event.key == pygame.K_RIGHT: # DASH SYMBOL EVENT -- marker moves right 
-                    right_pressed = True
-                    PLAYER_MARKER_MOVING = True
-                    morse_interpreter.letter_message = ""  # Blank the previous letter_message
-                    #print('right_arrow')
-					
-                if PLAYER_MARKER_MOVING == True:  # if Left/Right event occured: 
-                    morse_interpreter.handle_event(event)  # Accumulate morse code symbols, 
-                    # 'RETURN'/update letter_message text' is handled in its own IF CASE below
+    #events = pygame.event.get()
+    #print(f"Number of events in the queue: {len(events)}")
+    #if len(events) > max_count_events:
+    #        max_count_events = len(events)
+    #        print('MAX COUNT :',max_count_events)
 
-                # ---------------
-                # If the key press is RETURN [EMTER] key 
-                #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
-                #   Adjust the Game score
-                #   Reset the marker to the starting point.
-                # ---------------
-                if event.key == pygame.K_RETURN: # Choose this key to verify the morse code entered by the player
+    #for event in pygame.event.get():
+    #for event in events:
+    event = pygame.event.poll()
+    if event.type == pygame.NOEVENT:
+        continue
+		
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+    else:  # else process event.key
+        if event.type == pygame.KEYDOWN:
+            # ---------------
+            # Handle left/right keyboard events to move marker and accumulate morse code symbols
+            # ---------------
+            if event.key == pygame.K_LEFT:  # DOT SYMBOL EVENT -- marker moves left 
+                left_pressed = True
+                PLAYER_MARKER_MOVING = True
+                morse_interpreter.letter_message = ""  # Blank the previous letter_message
+                #print('left_arrow')
+            
+            if event.key == pygame.K_RIGHT: # DASH SYMBOL EVENT -- marker moves right 
+                right_pressed = True
+                PLAYER_MARKER_MOVING = True
+                morse_interpreter.letter_message = ""  # Blank the previous letter_message
+                #print('right_arrow')
 				
-                    if morse_interpreter.check_valid_morse_code() == True:  # Play code if valid 
-                        code_player.play_morse_code(morse_interpreter.lookup_morse_code(morse_interpreter.morse_code))
-                    if morse_char_tgt == morse_interpreter.current_morse_code():
-                        score_keeper.increment_player_score()
-                    else:
-                        score_keeper.increment_game_score()
-                    morse_interpreter.handle_event(event) #handle K_RETURN -> clear the dot-dash string
-                    player_marker.reset_marker() # Reset marker to starting position
+            if PLAYER_MARKER_MOVING == True:  # if Left/Right event occured: 
+                morse_interpreter.handle_event(event)  # Accumulate morse code symbols, 
+                # 'RETURN'/update letter_message text' is handled in its own IF CASE below
+
+            # ---------------
+            # If the key press is RETURN [EMTER] key 
+            #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
+            #   Adjust the Game score
+            #   Reset the marker to the starting point.
+            # ---------------
+            if event.key == pygame.K_RETURN: # Choose this key to verify the morse code entered by the player
+			
+                if morse_interpreter.check_valid_morse_code() == True:  # Play code if valid 
+                    code_player.play_morse_code(morse_interpreter.lookup_morse_code(morse_interpreter.morse_code))
+                if morse_char_tgt == morse_interpreter.current_morse_code():
+                    score_keeper.increment_player_score()
+                else:
+                    score_keeper.increment_game_score()
+                morse_interpreter.handle_event(event) #handle K_RETURN -> clear the dot-dash string
+                player_marker.reset_marker() # Reset marker to starting position
 
 
-                # ---------------
-                # If event.key == pygame.K_r or event.key == pygame.K_R:
-                #   Play a random character  
-                # Clear the current morse code string
-                # Reset the market to Start
-                # ---------------
-                if event.key == pygame.K_r:
-                    if GAME_MARKER_MOVING is False:
-                        morse_char_tgt = game_marker.encoder.generate_random_character()
-                        print('INIT GAME MRKR - MORSE CHAR TGT :',morse_char_tgt)
-                        game_marker.encode_character(morse_char_tgt)
-                        code_player.play_morse_code(morse_char_tgt)
-                        morse_interpreter.morse_code = ""
-                        player_marker.reset_marker() # Reset marker to starting position   
-                        game_marker_pause.set_count(4) # wait 3 update times before first moving the marker                 
-                        GAME_MARKER_MOVING = True
+            # ---------------
+            # If event.key == pygame.K_r or event.key == pygame.K_R:
+            #   Play a random character  
+            # Clear the current morse code string
+            # Reset the market to Start
+            # ---------------
+            if event.key == pygame.K_r:
+                if GAME_MARKER_MOVING is False:
+                    morse_char_tgt = game_marker.encoder.generate_random_character()
+                    print('INIT GAME MRKR - MORSE CHAR TGT :',morse_char_tgt)
+                    game_marker.encode_character(morse_char_tgt)
+                    code_player.play_morse_code(morse_char_tgt)
+                    morse_interpreter.morse_code = ""
+                    player_marker.reset_marker() # Reset marker to starting position   
+                    game_marker_pause.set_count(4) # wait 3 update times before first moving the marker                 
+                    GAME_MARKER_MOVING = True
 
-            # ----------------            
-            # else clear selected flag if its KEYUP
-            # ----------------
-            elif event.type == pygame.KEYUP:
-                
-                if event.key == pygame.K_LEFT:
-                    left_pressed = False
-                    #print('negate left_arrow')
-                elif event.key == pygame.K_RIGHT:
-                    right_pressed = False
-                    #print('negate right_arrow')
-                elif event.key == pygame.K_r:
-                    #print('R key up')
-                    pass
+        # ----------------            
+        # else clear selected flag if its KEYUP
+        # ----------------
+        elif event.type == pygame.KEYUP:
+            
+            if event.key == pygame.K_LEFT:
+                left_pressed = False
+                #print('negate left_arrow')
+            elif event.key == pygame.K_RIGHT:
+                right_pressed = False
+                #print('negate right_arrow')
+            elif event.key == pygame.K_r:
+                #print('R key up')
+                pass
 
-    # END OF FOR LOOP SCOPE
+    # END OF ELSE PROCESS EVENT CLAUSE
     
     # Clear the screen
     window.blit(background_image, (0, 0))
