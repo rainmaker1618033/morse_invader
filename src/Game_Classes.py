@@ -166,3 +166,22 @@ class ScoreKeeper:
         window.blit(score_surface, score_rect)
 
 ### END OF CLASS -  ScoreKeeper ###
+
+### END OF CLASS -  MarkerPause ###
+
+class MarkerPause:
+    def __init__(self):
+        self.count = 0
+        self.target_count = 0
+
+    def set_count(self, count):
+        self.target_count = count
+        self.count = 0
+
+    def update(self):
+        self.count += 1
+        if self.count >= self.target_count:
+            return True
+        return False
+
+### END OF CLASS -  MarkerPause ###

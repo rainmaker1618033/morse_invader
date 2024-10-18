@@ -6,7 +6,7 @@ import time
 import random
 import string
 from MorseCode_Classes import MorseCodePlayer, MorseCodeInterpreter,MorseCodeEncoder
-from Game_Classes import RectangleMarker, CircleMarker, ScoreKeeper
+from Game_Classes import RectangleMarker, CircleMarker, ScoreKeeper, MarkerPause
 
 
 ######## COMPOSITE CLASSES ################
@@ -125,7 +125,8 @@ text_color = (165, 42, 42)
 # === Variables to track arrow-key states
 left_pressed = False
 right_pressed = False
-
+# used to initially pause game_marker movement
+game_marker_pause = MarkerPause()
 # ---------------------------------
 #  INIT GAME CLASSES
 # ---------------------------------
@@ -216,7 +217,8 @@ while True:
                         game_marker.encode_character(morse_char_tgt)
                         code_player.play_morse_code(morse_char_tgt)
                         morse_interpreter.morse_code = ""
-                        player_marker.reset_marker() # Reset marker to starting position                    
+                        player_marker.reset_marker() # Reset marker to starting position   
+                        game_marker_pause.set_count(4) # wait 3 update times before first moving the marker                 
                         GAME_MARKER_MOVING = True
 
             # ----------------            
@@ -266,29 +268,33 @@ while True:
     # Update Game Marker Position
     # ------------------
     # Check if the interval has passed and GAME_MARKER needs updating
-    if elapsed_time - start_time >= interval and GAME_MARKER_MOVING:    
-        # encode current morse_char_tgt char into 'next' left/right = dot/dash
-        move_done_flag, left_pressed, right_pressed = game_marker.next_dot_dash()
-        # next marker position based on left/right; move_count++
-        game_marker.move_mkr(left_pressed, right_pressed, window.get_width(), window.get_height())
+    if elapsed_time - start_time >= interval and GAME_MARKER_MOVING:  
+        ready_to_move = game_marker_pause.update()  # wait 3 pause states
+        print((lambda x: True if x else False)(ready_to_move))
+        if ready_to_move :
 
-        move_count = game_marker.rectangle_marker.move_count
-        radius, xy_mod = game_marker.get_radius_from_list(move_count)
-        # add corrected x/y offset to marker postions
-        x_mod = xy_mod[0] + game_marker.rectangle_marker.x
-        y_mod = xy_mod[1] + game_marker.rectangle_marker.y
+            # encode current morse_char_tgt char into 'next' left/right = dot/dash
+            move_done_flag, left_pressed, right_pressed = game_marker.next_dot_dash()
+            # next marker position based on left/right; move_count++
+            game_marker.move_mkr(left_pressed, right_pressed, window.get_width(), window.get_height())
 
-        game_marker.set_circle_attributes(x_mod, y_mod, radius)
-        game_marker.set_font_attributes(morse_char_tgt, radius)  # radius determins font size
+            move_count = game_marker.rectangle_marker.move_count
+            radius, xy_mod = game_marker.get_radius_from_list(move_count)
+            # add corrected x/y offset to marker postions
+            x_mod = xy_mod[0] + game_marker.rectangle_marker.x
+            y_mod = xy_mod[1] + game_marker.rectangle_marker.y
 
-        if move_done_flag:  # if the game marker has reached its destination    
-            GAME_MARKER_MOVING = False
-            game_marker.reset_marker() # Reset marker to starting position            
-            print('WAIT FOR NEXT KEY PRESS')
-        else:
-            # reset the timer for next update
-            start_time = elapsed_time
-            print('*')
+            game_marker.set_circle_attributes(x_mod, y_mod, radius)
+            game_marker.set_font_attributes(morse_char_tgt, radius)  # radius determins font size
+
+            if move_done_flag:  # if the game marker has reached its destination    
+                GAME_MARKER_MOVING = False
+                game_marker.reset_marker() # Reset marker to starting position            
+                print('WAIT FOR NEXT KEY PRESS')
+            else:
+                # reset the timer for next update
+                start_time = elapsed_time
+                print('*')
 
     # ------------------
     # Update Score and Marker Position
