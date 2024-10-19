@@ -16,8 +16,6 @@ class CompositeMarker:
         self.rectangle_marker = RectangleMarker(x, y, size, speed_x, speed_y, color)
         self.circle_marker = CircleMarker(window_size)
         self.encoder = MorseCodeEncoder()
-        #print(f"Type of self.rectangle_marker: {type(self.rectangle_marker)}")
-        #print(f"Methods of self.rectangle_marker: {[method for method in dir(self.rectangle_marker) if callable(getattr(self.rectangle_marker, method))]}")
 
     def draw_marker(self, surface):
         self.rectangle_marker.draw(surface)
@@ -135,6 +133,7 @@ player_marker = RectangleMarker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, ma
 PLAYER_MARKER_MOVING = False # player has not hit left/right arrow keys
 # === Game Marker Position
 game_marker = CompositeMarker((window_width // 2)-25, 55, BLK_SIZE, 10, 10, marker_color, window_size)
+game_marker.set_circle_attributes((window_width // 2)-15, 65,10)
 GAME_MARKER_MOVING = False # Game Target Circle is not displayed 
 # === Create ScoreKeeper
 score_keeper = ScoreKeeper(font, window_width, window_height)
@@ -162,22 +161,11 @@ max_count_events = 0
 
 while True:
     elapsed_time = time.time()
-    
-    #events = pygame.event.get()
-    #print(f"Number of events in the queue: {len(events)}")
-    #if len(events) > max_count_events:
-    #        max_count_events = len(events)
-    #        print('MAX COUNT :',max_count_events)
-
-    #for event in pygame.event.get():
-    #for event in events:
     event = pygame.event.poll()
-    if event.type == pygame.NOEVENT:
-        continue
-		
     if event.type == pygame.QUIT:
         pygame.quit()
         sys.exit()
+
     else:  # else process event.key
         if event.type == pygame.KEYDOWN:
             # ---------------
@@ -187,13 +175,11 @@ while True:
                 left_pressed = True
                 PLAYER_MARKER_MOVING = True
                 morse_interpreter.letter_message = ""  # Blank the previous letter_message
-                #print('left_arrow')
             
             if event.key == pygame.K_RIGHT: # DASH SYMBOL EVENT -- marker moves right 
                 right_pressed = True
                 PLAYER_MARKER_MOVING = True
                 morse_interpreter.letter_message = ""  # Blank the previous letter_message
-                #print('right_arrow')
 				
             if PLAYER_MARKER_MOVING == True:  # if Left/Right event occured: 
                 morse_interpreter.handle_event(event)  # Accumulate morse code symbols, 
@@ -203,7 +189,7 @@ while True:
             # If the key press is RETURN [EMTER] key 
             #   If the code symbol is valid -- Play the morse symbol dot-dash sounds
             #   Adjust the Game score
-            #   Reset the marker to the starting point.
+            #   Reset the player marker to the starting point.
             # ---------------
             if event.key == pygame.K_RETURN: # Choose this key to verify the morse code entered by the player
 			
@@ -221,7 +207,7 @@ while True:
             # If event.key == pygame.K_r or event.key == pygame.K_R:
             #   Play a random character  
             # Clear the current morse code string
-            # Reset the market to Start
+            # Reset the player marker to Start
             # ---------------
             if event.key == pygame.K_r:
                 if GAME_MARKER_MOVING is False:
@@ -318,9 +304,8 @@ while True:
         player_marker.move_mkr(left_pressed, right_pressed, window_width, window_height)
         PLAYER_MARKER_MOVING = False   
 
-    
-    player_marker.draw(window)
-    game_marker.draw_circle(window)
+    player_marker.draw(window)       # current player position
+    game_marker.draw_circle(window)  # current game marker position
 
 
     #marker_gpos.draw(window)
