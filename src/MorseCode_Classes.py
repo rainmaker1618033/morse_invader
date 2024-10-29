@@ -124,6 +124,7 @@ class MorseCodeInterpreter:
             '----.': '9', '.-.-.' :'+', '-...-': '=', '-..-.': '/'
         }
 
+    #### no longer used -- events are handled in main
     def handle_event(self, event):
         """
         Handle a pygame event, interpreting it as Morse code input.
@@ -134,6 +135,20 @@ class MorseCodeInterpreter:
             elif event.key == pygame.K_RETURN:
                 self.interpret_morse_code()
 
+    #### replacing handle_event
+    def handle_arrow_keys(self, left: bool, right: bool):
+        """
+        Handle Left/Right user keys, interpreting them as Morse code input.
+        """
+        if (left == True and right == False):				
+            self.morse_code += '.'
+        elif (left == False and right == True):							
+            self.morse_code += '-'
+            
+    #### replacing handle_event
+    def handle_return_key(self):
+        self.interpret_morse_code()
+			
     def interpret_morse_code(self):
         if self.morse_code in self.morse_alphabet:
             self.letter_message = f'Code Letter: {self.morse_alphabet[self.morse_code]}'
