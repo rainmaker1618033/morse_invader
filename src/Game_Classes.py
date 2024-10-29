@@ -1,5 +1,7 @@
 import pygame
 import numpy as np
+import time
+import sys
 
 class RectangleMarker:
     """
@@ -95,10 +97,10 @@ class CircleMarker:
         self.window_size = window_size
         self.circle_center = [window_size[0] // 2, window_size[1] // 2]
         self.circle_radius = 10
-        self.circle_color = (255, 0, 0)
+        self.circle_color = (255, 0, 0)  # RED
         self.font_size = 10
-        self.font_color = (255, 255, 255)
-        self.text = "."  # unknown character guard
+        self.font_color = (255, 255, 255) # WHITE
+        self.text = ""  
         self.font = pygame.font.Font(None, self.font_size)
         self.text_surface = self.font.render(self.text, True, self.font_color)
         self.text_rect = self.text_surface.get_rect(center=self.circle_center)
@@ -111,7 +113,6 @@ class CircleMarker:
         self.circle_radius = radius
 
     def set_font_attributes(self,TGT_LTR,NEW_SIZE):
-        #self.font_size = random.randint(30, 100)
         self.text = TGT_LTR
         self.font_size = NEW_SIZE
         self.font = pygame.font.Font(None, int(self.font_size))
@@ -120,7 +121,13 @@ class CircleMarker:
 
     def draw(self, window):
         pygame.draw.circle(window, self.circle_color, self.circle_center, self.circle_radius)
-        window.blit(self.text_surface, self.text_rect)
+        if self.text_surface is not None:
+            window.blit(self.text_surface, self.text_rect)
+    
+    def clear_text(self):
+        """ clear the text char that gets left behind when the game maker moves"""
+        self.text = ""
+        self.text_surface = None
     
     def get_radius_from_list(self, move_count):
         if 0 <= move_count < len(self.radii):
@@ -128,7 +135,6 @@ class CircleMarker:
             return self.radii[move_count], xy_mod
         else:
             raise IndexError(f"Move count {move_count} is out of range. Valid range is 0 to {len(self.radii) - 1}.")     
-
 
 ### END OF CLASS -  CircleMarker ###
 
@@ -167,9 +173,17 @@ class ScoreKeeper:
 
 ### END OF CLASS -  ScoreKeeper ###
 
-### END OF CLASS -  MarkerPause ###
-
 class MarkerPause:
+    """
+    A class for creating a programable number of pause states
+
+    This class returns FALSE until the targeted number of pause
+    states is reached.  After that, it returns TRUE
+
+    Attributes:
+        count (int): The count of pause states
+        target_count (int): Set N-1 pause states before returning TRUE
+    """
     def __init__(self):
         self.count = 0
         self.target_count = 0
@@ -185,3 +199,54 @@ class MarkerPause:
         return False
 
 ### END OF CLASS -  MarkerPause ###
+
+class StartSequence:
+    """ class to display a splash screen and game instructions"""
+    def __init__(self):
+        pygame.init()
+        self.window = pygame.display.set_mode((800, 600))
+        pygame.display.set_caption("Morse Invader")
+        self.logo = pygame.image.load('assets/images/logo_file.png')
+        #self.logo = pygame.transform.scale(self.logo, (800, 600))
+        self.font = pygame.font.Font(None, 36)
+        self.instructions = [
+            "    Welcome to Morse Invader!",
+            " ",
+            " While Forever",
+            "   1) Press 'R' to play a random Morse code character.",
+            "   2) Press left and right arrow keys to enter matching Morse code.",
+            "   3) Press 'Enter' to see if your Morse code matches.",
+            " ",
+            "Press 'Enter' to start the game."
+        ]
+
+    def show_logo(self):
+        self.window.fill((255, 255, 255))  # Fill the screen with white
+        self.window.blit(self.logo, (0, 0))  # Display the resized logo
+        pygame.display.update()
+        time.sleep(2)  # Wait for 2 seconds
+
+    def show_instructions(self):
+	    # Clear the event queue before showing instructions
+        # pygame.event.clear()  ## doesn't work
+        showing = True
+        while showing:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        showing = False
+            self.window.fill((0, 0, 0))  # Fill the screen with black
+            for i, line in enumerate(self.instructions):
+                instruction_text = self.font.render(line, True, (0, 0, 255))  # Render text in blue
+                self.window.blit(instruction_text, (20, 20 + i * 40))
+            pygame.display.update()
+            pygame.time.Clock().tick(30)
+
+    def run_intro(self):
+        self.show_logo()
+        self.show_instructions()
+
+### END OF CLASS -  InstructPage ###
