@@ -44,11 +44,11 @@ numeric codes plus a few more. The design of this game was loosely inspired by S
 2. Run the following commands to generate the executable:
    ```
    cd ~\src
-   pyinstaller --onefile --add-data "assets:assets/images" --icon=icon.ico MORSE_INVADER.py
+   pyinstaller --onefile --add-data "assets:assets/images" --icon=icon.ico Morse_Invader.py
    ```
 3. The executable will be generated in the /dist folder.
 
-4. Copy ~/src/assets/images/background.jpg to ~/dist/assets/images/background.jpg
+4. Copy ~/src/assets/images/ to ~/dist/assets/images/
 
 5. Run the executable:
    ```
@@ -89,11 +89,12 @@ If you want to create the executable yourself, follow the steps provided in the 
 
 ## Future Enhancements
 
+- Add space invader type animation to the moving game marker
 - Adjustable dot/dash playback speed for morse code symbols.
 - Use 'S' to show the Target Character, else hide it by displaying '---' instead
 - Three leter mode to generate three random characters in sequence and allow player to enter same three letters before scoring result as hit or miss. 
 - International Character Version
-- Add a second marker which moves from start to target char after the 'R' key plays the dot dash sounds. The player tries to move their cursor to the target first to win. 
+
 
 ## Contributing
 
@@ -107,7 +108,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Dot Dash sound effects thanks to Pyaudio.
 - Game Engine thanks to the Pygame community.
-- Selected algorithms originated by ChatGPT and integrated by author.
+- Selected algorithms and assists by ChatGPT and Claude.  
 - Background Art inspired by: https://ia.m.wikipedia.org/wiki/File:Morse-code-tree.svg
-- Game concept and balance of the code created by the author.
+- Game design by author.
 
